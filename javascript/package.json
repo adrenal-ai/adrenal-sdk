@@ -1,8 +1,28 @@
 {
-  "name": "adrenal-sdk",
-  "version": "0.1.0",
+  "name": "@adrenal-ai/sdk",
+  "version": "0.1.6",
   "private": false,
   "description": "Official SDK for Adrenal AI chatbots",
+  "workspaces": [
+    "packages/*"
+  ],
+  "exports": {
+    "./react": "./packages/react/src/index.js",
+    "./server": "./packages/server/src/index.js"
+  },
+  "files": [
+    "packages/react/src",
+    "packages/server/src"
+  ],
+  "dependencies": {
+    "react": "^19.0.0"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "keywords": [
     "adrenal",
     "chatbot",
@@ -21,4 +41,4 @@
     "url": "https://github.com/adrenal-ai/adrenal-sdk/issues"
   },
   "homepage": "https://github.com/adrenal-ai/adrenal-sdk#readme"
-}
+} 

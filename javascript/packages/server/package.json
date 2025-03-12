@@ -1,0 +1,11 @@
+{
+  "name": "@adrenal-sdk/server",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "files": [
+    "src"
+  ],
+  "dependencies": {
+    "node-fetch": "^2.6.1"
+  }
+} 
