@@ -6,10 +6,38 @@ export function useChatbot({ publishId }) {
   const [isLoading, setIsLoading] = useState(false);
   const [chatId, setChatId] = useState(null);
   const [abortController, setAbortController] = useState(null);
+  const [chatbot, setChatbot] = useState(null);
+  const [error, setError] = useState(null);
   const responseBuffer = useRef('');
   const updateTimer = useRef(null);
   const lastUpdateTime = useRef(0);
   const BATCH_INTERVAL = 16; // Roughly one frame (60fps)
+
+  useEffect(() => {
+    async function fetchChatbot() {
+      try {
+        const response = await fetch(`https://adrenal.ai/api/chatbot/${publishId}/live`);
+        if (!response.ok) {
+          throw new Error('Failed to load chatbot');
+        }
+        const data = await response.json();
+        setChatbot(data);
+        
+        // Set initial message if available
+        if (data.messages_initial) {
+          setMessages([{
+            role: 'assistant',
+            content: data.messages_initial,
+            id: 'initial-message'
+          }]);
+        }
+      } catch (err) {
+        setError(err);
+      }
+    }
+    
+    fetchChatbot();
+  }, [publishId]);
 
   const batchedUpdate = useCallback(content => {
     const now = Date.now();
@@ -66,7 +94,7 @@ export function useChatbot({ publishId }) {
   const handleSubmit = useCallback(
     async e => {
       e?.preventDefault();
-      if (!input.trim() || isLoading) return;
+      if (!input.trim() || isLoading || !chatbot?.live) return;
 
       const content = input.trim();
       setInput('');
@@ -175,7 +203,7 @@ export function useChatbot({ publishId }) {
         }
       }
     },
-    [input, isLoading, messages, chatId, publishId, batchedUpdate]
+    [input, isLoading, messages, chatId, publishId, batchedUpdate, chatbot?.live]
   );
 
   return {
@@ -186,5 +214,7 @@ export function useChatbot({ publishId }) {
     isLoading,
     stop,
     setMessages,
+    chatbot,
+    error,
   };
 } 
